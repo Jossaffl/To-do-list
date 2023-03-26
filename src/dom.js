@@ -1,8 +1,11 @@
-export {todoInput, entryDiv, projectForm}
+export {todoInputForm, entryDiv,  ProjectFormCreator}
 
-function todoInput () {
-    const form = document.createElement('div')
-    form.setAttribute('id','form')
+function todoInputForm () {
+
+    const inputDiv = document.getElementById('inputDiv') 
+
+    const formDiv = document.createElement('div')
+    formDiv.setAttribute('id','form')
 
     const tittleDiv = document.createElement('div')
     const tittleLabel= document.createElement('label')
@@ -32,17 +35,30 @@ function todoInput () {
     submitButton.setAttribute('id','submitButton')
     submitButton.textContent = 'submit'
 
-    form.appendChild(tittleDiv)
-    form.appendChild(dateDiv)
-    form.appendChild(descriptionDiv)
-    form.appendChild(submitButton)
-
     return {
-        form, tittleInput, descriptionInput, dateInput, submitButton
+        createForm: () => {
+            
+            formDiv.appendChild(tittleDiv)
+            formDiv.appendChild(dateDiv)
+            formDiv.appendChild(descriptionDiv)
+            formDiv.appendChild(submitButton)
+            inputDiv.appendChild(formDiv)
+        },
+
+        'tittleInput': tittleInput,
+        'descriptionInput': descriptionInput,
+        'dateInput': dateInput,
+        'submitButton': submitButton,
+        'formDiv': formDiv
     }
 }
 
-const entryDiv = (tittle, date, description) => {
+
+const entryDiv = ({tittle, description, date}) => {
+
+    const contentDiv = document.getElementById('content')
+
+    let ListDiv = contentDiv.lastElementChild
 
     const entry = document.createElement('div')
     entry.classList.add('entry')
@@ -59,68 +75,65 @@ const entryDiv = (tittle, date, description) => {
     entryDescription.textContent = description
     entryDescription.classList.add('entryDescription')
 
-    const appender = (tittle, date) => {
-        if (date.textContent == '') {
-            entry.appendChild(tittle)
-        }
-        else {
-            entry.appendChild(tittle)
-            entry.appendChild(date)
-        }
-    }
-
-    appender(entryTittle, entryDate)
-    
+    entry.appendChild(entryTittle)
+    entry.appendChild(entryDate)
+    entry.appendChild(entryDescription)
 
     return {
-        entry
+        appendDiv: () => {
+            ListDiv.appendChild(entry)
+        }
     }
-
 }
 
+function ProjectFormCreator () {
 
-
-
-const projectForm = () => {
-
-    const newProject = document.getElementById('newProject')
-
-    const inputDiv = document.getElementById('inputDiv')
-
-    const list = document.getElementById('list')
-
-    const newList = document.createElement('div')
-    newList.classList.add('newList')
+    const content = document.getElementById('content')
 
     const projectForm = document.createElement('div')
-    projectForm.classList.add('projectForm')
 
+    const inputDiv = document.getElementById('inputDiv')
+    
     const projectLabel = document.createElement('label')
     projectLabel.textContent = 'Project name'
 
     const projectName = document.createElement('input')
     projectName.type = 'text'
 
+    const objectButton = document.createElement('button')
+    objectButton.classList.add('projectButton')
+
+    const objectDiv = document.createElement('div')
+    objectDiv.classList.add('newList')
+
     const submitButton = document.createElement('button')
     submitButton.textContent = 'Add'
 
-    projectForm.appendChild(projectLabel)
-    projectForm.appendChild(projectName)
-    projectForm.appendChild(submitButton)
+    submitButton.addEventListener('click', (e)=> {
 
-    newProject.addEventListener('click', () => {
-        inputDiv.appendChild(projectForm)
-    
+        objectButton.textContent = projectName.value
+        inputDiv.appendChild(objectButton)
+
+        content.lastElementChild.replaceWith(objectDiv)
+
+        inputDiv.removeChild(projectForm)
+
+        e.preventDefault()
     })
 
-    submitButton.addEventListener('click', () => { 
-        list.replaceWith(newList)
+    objectButton.addEventListener('click', ()=> {
+
+        content.lastElementChild.replaceWith(objectDiv)
+
     })
-    
 
     return {
-        projectForm, submitButton
+        createProjectForm: () => {
+            projectForm.appendChild(projectLabel)
+            projectForm.appendChild(projectName)
+            projectForm.appendChild(submitButton)
+            inputDiv.appendChild(projectForm)
+        },
+        
     }
 }
-
-
